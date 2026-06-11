@@ -1,0 +1,57 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Variables locales
+.env
+.env.*
+
+# Datasets y archivos pesados
+data/raw/*
+data/processed/*
+data/pdfs/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/pdfs/.gitkeep
+
+# Modelos entrenados y artefactos
+models/*
+!models/.gitkeep
+*.model
+*.kv
+*.bin
+*.pt
+*.pth
+*.safetensors
+
+# Embeddings, figuras y salidas generadas
+outputs/tokenization/*
+outputs/embeddings/*
+outputs/figures/*
+outputs/similarity/*
+outputs/reports/*
+!outputs/tokenization/.gitkeep
+!outputs/embeddings/.gitkeep
+!outputs/figures/.gitkeep
+!outputs/similarity/.gitkeep
+!outputs/reports/.gitkeep
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db

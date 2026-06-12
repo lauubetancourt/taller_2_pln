@@ -52,7 +52,6 @@ taller_pln/
 Desde la raiz del proyecto:
 
 ```bash
-cd taller_pln
 python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
@@ -69,7 +68,6 @@ En Windows PowerShell, la activacion del entorno cambia a:
 ## Ejecutar el notebook
 
 ```bash
-cd taller_pln
 jupyter notebook notebooks/taller_pln.ipynb
 ```
 
@@ -77,18 +75,47 @@ El notebook debe funcionar como orquestador: probar funciones, mostrar ejemplos 
 
 ## Ejecutar scripts desde terminal
 
-Ejemplos previstos para fases posteriores:
+Tokenizacion local:
 
 ```bash
 python scripts/run_tokenization.py
-python scripts/train_word2vec.py
-python scripts/train_fasttext.py
-python scripts/process_pdfs.py
-python scripts/generate_sentence_embeddings.py
+python scripts/analyze_tokenization.py
 ```
 
-En esta fase los scripts quedan como puntos de entrada base y no descargan datasets, no entrenan modelos y no generan embeddings.
+Punto 2, embeddings distribucionales:
+
+```bash
+# 1. Preparar muestras con streaming
+python3 scripts/prepare_spanish_billion_sample.py --max-sentences 100 --output-name sample_100
+python3 scripts/prepare_spanish_billion_sample.py --max-sentences 5000 --output-name sample_5000
+python3 scripts/prepare_spanish_billion_sample.py --max-sentences 10000 --output-name sample_10000
+
+# 2. Entrenar Word2Vec y FastText
+python3 scripts/train_word_embeddings.py --sentences-file data/processed/sentences/spanish_billion_clean_sample_100.jsonl --output-suffix sample_100 --workers 4
+python3 scripts/train_word_embeddings.py --sentences-file data/processed/sentences/spanish_billion_clean_sample_5000.jsonl --output-suffix sample_5000 --workers 4
+python3 scripts/train_word_embeddings.py --sentences-file data/processed/sentences/spanish_billion_clean_sample_10000.jsonl --output-suffix sample_10000 --workers 4
+
+# 3. Analizar similaridad y OOV
+python3 scripts/analyze_word_similarity.py \
+  --word2vec-model models/word2vec_sample_10000.model \
+  --fasttext-model models/fasttext_sample_10000.model \
+  --words gobierno,presidente,ciudad,equipo,mercado \
+  --oov-words hiperconectividad,futbolísticamente
+
+# 4. Visualizar PCA y t-SNE
+python3 scripts/visualize_word_embeddings.py \
+  --word2vec-model models/word2vec_sample_10000.model \
+  --fasttext-model models/fasttext_sample_10000.model \
+  --training-size-label sample_10000 \
+  --max-words 200 \
+  --run-pca \
+  --run-tsne
+```
+
+Los scripts de PDFs y Sentence-Transformers siguen reservados para fases posteriores.
 
 ## Nota sobre memoria
 
 No cargues datasets grandes completos en memoria si no es necesario. Para corpus masivos como Spanish Billion Clean, usa `streaming=True`, procesamiento por lotes e iteradores. Ajusta `N_WORKERS`, tamanos de lote y subconjuntos de visualizacion segun la memoria y CPU de la maquina local.
+
+Durante el entrenamiento, Gensim usa `workers` para aprovechar varios nucleos. No se aplica multiprocessing adicional sobre el streaming completo para evitar saturar la RAM.

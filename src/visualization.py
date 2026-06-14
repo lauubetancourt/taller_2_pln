@@ -221,6 +221,68 @@ def create_reduction_dataframe(
     )
 
 
+def plot_query_match_projection(
+    points: Any,
+    labels: list[str],
+    roles: list[str],
+    title: str,
+    output_path: str | Path | None = None,
+) -> Any:
+    """Graficar consulta, fragmento mas similar y contexto en 2D."""
+
+    import matplotlib.pyplot as plt
+
+    if len(points) != len(labels) or len(labels) != len(roles):
+        raise ValueError("points, labels y roles deben tener la misma longitud.")
+
+    role_styles = {
+        "context": {"color": "lightgray", "marker": "o", "label": "Contexto"},
+        "chunk": {"color": "tab:blue", "marker": "o", "label": "Fragmentos top-k"},
+        "best_chunk": {
+            "color": "tab:green",
+            "marker": "s",
+            "label": "Fragmento más similar",
+        },
+        "query": {"color": "tab:red", "marker": "*", "label": "Consulta"},
+    }
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    for role in ["context", "chunk", "best_chunk", "query"]:
+        indices = [
+            index for index, current_role in enumerate(roles) if current_role == role
+        ]
+        if not indices:
+            continue
+        style = role_styles[role]
+        ax.scatter(
+            [points[index, 0] for index in indices],
+            [points[index, 1] for index in indices],
+            c=style["color"],
+            marker=style["marker"],
+            s=130 if role == "query" else 70,
+            alpha=0.9 if role in {"query", "best_chunk"} else 0.7,
+            label=style["label"],
+        )
+
+    for index, (label, role) in enumerate(zip(labels, roles, strict=True)):
+        if role in {"query", "best_chunk"}:
+            ax.annotate(label, (points[index, 0], points[index, 1]), fontsize=9)
+
+    ax.set_title(title)
+    ax.set_xlabel("Dim 1")
+    ax.set_ylabel("Dim 2")
+    ax.legend()
+    ax.grid(alpha=0.25)
+    fig.tight_layout()
+
+    if output_path is not None:
+        path = Path(output_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(path, dpi=160)
+
+    return fig, ax
+
+
 def plot_2d_embeddings(
     coordinates: Any,
     labels: list[str] | None = None,

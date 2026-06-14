@@ -112,7 +112,29 @@ python3 scripts/visualize_word_embeddings.py \
   --run-tsne
 ```
 
-Los scripts de PDFs y Sentence-Transformers siguen reservados para fases posteriores.
+Punto 3, PDFs y embeddings semanticos:
+
+```bash
+# 1. Copiar o descargar los PDFs del taller en data/pdfs/
+
+# 2. Extraer texto con PyMuPDF4LLM y generar chunks con LangChain
+python3 scripts/process_pdfs.py \
+  --pdf-dir data/pdfs \
+  --output-file data/processed/pdf_chunks.jsonl
+
+# 3. Generar embeddings, calcular similitud coseno y crear PCA/t-SNE
+python3 scripts/generate_sentence_embeddings.py \
+  --chunks-file data/processed/pdf_chunks.jsonl \
+  --query "¿Cuál es la idea principal de los documentos procesados?"
+```
+
+El segundo script evalua por defecto los cuatro modelos solicitados en el enunciado. Para probar solo uno durante desarrollo:
+
+```bash
+python3 scripts/generate_sentence_embeddings.py \
+  --models sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 \
+  --skip-tsne
+```
 
 ## Nota sobre memoria
 

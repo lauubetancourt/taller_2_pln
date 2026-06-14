@@ -55,3 +55,7 @@ outputs/reports/*
 # Archivos temporales del sistema
 .DS_Store
 Thumbs.db
+
+# Configuración local de agentes
+.agents/
+skills-lock.json

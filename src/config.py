@@ -4,9 +4,8 @@ Este modulo solo define rutas y constantes. No debe descargar datos, cargar mode
 ni ejecutar procesamiento pesado al importarse.
 """
 
-from pathlib import Path
 import os
-
+from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,6 +15,7 @@ PROCESSED_DATA_DIR = DATA_DIR / "processed"
 PDFS_DIR = DATA_DIR / "pdfs"
 CONLL2002_RAW_DIR = RAW_DATA_DIR / "conll2002"
 ANCORA_RAW_DIR = RAW_DATA_DIR / "ancora"
+PDF_CHUNKS_PATH = PROCESSED_DATA_DIR / "pdf_chunks.jsonl"
 
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 MODELS_DIR = PROJECT_ROOT / "models"
@@ -42,6 +42,11 @@ PROCESSED_SENTENCES_DIR = PROCESSED_DATA_DIR / "sentences"
 WORD_EMBEDDINGS_OUTPUT_DIR = OUTPUTS_DIR / "embeddings" / "word_embeddings"
 WORD_EMBEDDINGS_REPORTS_DIR = OUTPUTS_DIR / "reports" / "word_embeddings"
 WORD_EMBEDDINGS_FIGURES_DIR = FIGURES_DIR / "word_embeddings"
+
+SENTENCE_EMBEDDINGS_OUTPUT_DIR = OUTPUTS_DIR / "embeddings" / "sentence_embeddings"
+SENTENCE_EMBEDDINGS_REPORTS_DIR = OUTPUTS_DIR / "reports" / "sentence_embeddings"
+SENTENCE_EMBEDDINGS_FIGURES_DIR = FIGURES_DIR / "sentence_embeddings"
+SENTENCE_EMBEDDINGS_SIMILARITY_DIR = OUTPUTS_DIR / "similarity" / "sentence_embeddings"
 
 WORD2VEC_MODEL_PATH = MODELS_DIR / "word2vec_spanish_billion.model"
 FASTTEXT_MODEL_PATH = MODELS_DIR / "fasttext_spanish_billion.model"
